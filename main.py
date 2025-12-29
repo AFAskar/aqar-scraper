@@ -850,7 +850,7 @@ def parse_using_json(page: str) -> list[dict]:
         data = json.loads(script_tag.string)
         listing_ids_parent = data["props"]["pageProps"]["__APOLLO_STATE__"][
             "ROOT_QUERY"
-        ]["WEB"]
+        ]["Web"]
         # listing ids are stored under the find sql key find({\"from\":20,\"size\":20,\"sort\":{\"create_time\":\"desc\",\"has_img\":\"desc\"},\"where\":{}}) so the from size may vary
         listing_ids_key = next(
             key
@@ -860,8 +860,11 @@ def parse_using_json(page: str) -> list[dict]:
         listing_ids = listing_ids_parent[listing_ids_key]["listings"]
 
         for listing_id in listing_ids:
+            listing_ref = (
+                listing_id.get("__ref") if isinstance(listing_id, dict) else listing_id
+            )
             listing_data = data["props"]["pageProps"]["__APOLLO_STATE__"].get(
-                listing_id, {}
+                listing_ref, {}
             )
             category_info = get_category_details(str(listing_data.get("category")))
 
@@ -987,9 +990,8 @@ def parse_using_json(page: str) -> list[dict]:
             # Description & Media
             dict_item["description"] = listing_data.get("content")
             dict_item["images"] = listing_data.get("imgs", [])
-            dict_item["videos"] = [
-                video.get("video") for video in listing_data.get("videos", [])
-            ]
+            videos = listing_data.get("videos") or []
+            dict_item["videos"] = [video.get("video") for video in videos if video]
 
             output.append(dict_item)
 
