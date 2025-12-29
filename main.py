@@ -876,23 +876,109 @@ def parse_using_json(page: str) -> list[dict]:
                 return "sale"
 
             dict_item = {}
+            # Basic Information
             dict_item["id"] = listing_data.get("id")
             dict_item["title"] = listing_data.get("title")
+            dict_item["url"] = "https://sa.aqar.fm" + listing_data.get("path", "")
+
+            # Pricing
             dict_item["price"] = listing_data.get("price")
+            dict_item["meter_price"] = listing_data.get("meter_price")
+            dict_item["price_2_payments"] = listing_data.get("price_2_payments")
+            dict_item["price_4_payments"] = listing_data.get("price_4_payments")
+            dict_item["price_12_payments"] = listing_data.get("price_12_payments")
+            dict_item["rnpl_monthly_price"] = listing_data.get("rnpl_monthly_price")
+            dict_item["rent_period"] = listing_data.get("rent_period")
+
+            # Property Details
             dict_item["area_sqm"] = listing_data.get("area")
+            dict_item["deed_area"] = listing_data.get("deed_area")
             dict_item["num_bedrooms"] = listing_data.get("beds")
             dict_item["num_bathrooms"] = listing_data.get("wc")
             dict_item["num_living_rooms"] = listing_data.get("livings")
+            dict_item["num_kitchens"] = listing_data.get("ketchen")
+            dict_item["num_rooms"] = listing_data.get("rooms")
+            dict_item["floor_level"] = listing_data.get("fl")
+            dict_item["age"] = listing_data.get("age")
+            dict_item["furnished"] = listing_data.get("furnished")
+            dict_item["duplex"] = listing_data.get("duplex")
             dict_item["zoning"] = listing_data.get("type")
-            dict_item["street-width"] = listing_data.get("street_width")
-            dict_item["category"] = category_info
+
+            # Amenities & Features
+            dict_item["ac"] = listing_data.get("ac")
+            dict_item["lift"] = listing_data.get("lift")
+            dict_item["maid_room"] = listing_data.get("maid")
+            dict_item["driver_room"] = listing_data.get("driver")
+            dict_item["pool"] = listing_data.get("pool")
+            dict_item["basement"] = listing_data.get("basement")
+            dict_item["backyard"] = listing_data.get("backyard")
+            dict_item["playground"] = listing_data.get("playground")
+            dict_item["car_entrance"] = listing_data.get("car_entrance")
+            dict_item["stairs"] = listing_data.get("stairs")
+            dict_item["stores"] = listing_data.get("stores")
+            dict_item["wells"] = listing_data.get("wells")
+            dict_item["trees"] = listing_data.get("trees")
+
+            # Property Access & Utilities
+            dict_item["water_availability"] = listing_data.get("water_availability")
+            dict_item["electrical_availability"] = listing_data.get(
+                "electrical_availability"
+            )
+            dict_item["drainage_availability"] = listing_data.get(
+                "drainage_availability"
+            )
+            dict_item["private_roof"] = listing_data.get("private_roof")
+            dict_item["two_entrances"] = listing_data.get("two_entrances")
+            dict_item["special_entrance"] = listing_data.get("special_entrance")
+            dict_item["apartment_in_villa"] = listing_data.get("apartment_in_villa")
+
+            # Location & Direction
+            dict_item["street_width"] = listing_data.get("street_width")
+            dict_item["street_direction"] = listing_data.get("street_direction")
+            dict_item["direction_id"] = listing_data.get("direction_id")
             dict_item["city"] = listing_data.get("city")
+            dict_item["city_id"] = listing_data.get("city_id")
             dict_item["district"] = listing_data.get("district")
-            dict_item["sale_type"] = get_sale_type()
+            dict_item["district_id"] = listing_data.get("district_id")
+            dict_item["province_id"] = listing_data.get("province_id")
             dict_item["address"] = listing_data.get("address")
-            dict_item["description"] = listing_data.get("content")
             dict_item["latitude"] = listing_data.get("location", {}).get("lat")
             dict_item["longitude"] = listing_data.get("location", {}).get("lng")
+
+            # Category & Sale Type
+            dict_item["category"] = category_info
+            dict_item["sale_type"] = get_sale_type()
+
+            # Listing Information
+            dict_item["create_time"] = listing_data.get("create_time")
+            dict_item["published_at"] = listing_data.get("published_at")
+            dict_item["last_update"] = listing_data.get("last_update")
+            dict_item["verified"] = listing_data.get("verified")
+            dict_item["boosted"] = listing_data.get("boosted")
+            dict_item["premium"] = listing_data.get("premium")
+            dict_item["has_img"] = listing_data.get("has_img")
+            dict_item["has_video"] = listing_data.get("has_video")
+
+            # Legal & Documentation
+            dict_item["ad_license_number"] = listing_data.get("ad_license_number")
+            dict_item["deed_number"] = listing_data.get("deed_number")
+            dict_item["rega_licensed"] = listing_data.get("rega_licensed")
+            dict_item["plan_no"] = listing_data.get("plan_no")
+            dict_item["parcel_no"] = listing_data.get("parcel_no")
+
+            # User/Agent Information
+            user_info = listing_data.get("user", {})
+            dict_item["user_type"] = listing_data.get("user_type")
+            dict_item["user_verified"] = (
+                user_info.get("iam_verified") if user_info else None
+            )
+            dict_item["company_name"] = (
+                user_info.get("company_name") if user_info else None
+            )
+            dict_item["user_paid_tier"] = user_info.get("paid") if user_info else None
+
+            # Description & Media
+            dict_item["description"] = listing_data.get("content")
             dict_item["images"] = listing_data.get("imgs", [])
             dict_item["videos"] = [
                 video.get("video") for video in listing_data.get("videos", [])
