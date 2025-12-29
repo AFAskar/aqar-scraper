@@ -938,7 +938,7 @@ def parse_using_json(page: str) -> list[dict]:
             # Location & Direction
             dict_item["street_width"] = listing_data.get("street_width")
             dict_item["street_direction"] = listing_data.get("street_direction")
-            dict_item["direction_id"] = listing_data.get("direction_id")
+            dict_item["direction"] = listing_data.get("direction")
             dict_item["city"] = listing_data.get("city")
             dict_item["city_id"] = listing_data.get("city_id")
             dict_item["district"] = listing_data.get("district")
@@ -1035,5 +1035,6 @@ if __name__ == "__main__":
     all_listings = parse_all_category_pages(all_pages)
 
     df = pd.DataFrame(all_listings)
+
     df.to_csv("aqar_fm_listings.csv", index=False)
     df.to_json("aqar_fm_listings.json", orient="records", force_ascii=False)
