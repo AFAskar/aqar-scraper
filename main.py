@@ -179,10 +179,26 @@ def parse_using_json(page: str) -> list[dict]:
 
     try:
         data = json.loads(script_tag.string)
-        # Extract listing IDs from the JSON data
-        listing_ids = data["props"]["pageProps"]["__APOLLO_STATE__"]["ROOT_QUERY"][
-            "WEB"
-        ]
+        listing_ids_parent = data["props"]["pageProps"]["__APOLLO_STATE__"][
+            "ROOT_QUERY"
+        ]["WEB"]
+        # listing ids are stored under the find sql key find({\"from\":20,\"size\":20,\"sort\":{\"create_time\":\"desc\",\"has_img\":\"desc\"},\"where\":{}}) so the from size may vary
+        listing_ids_key = next(
+            key
+            for key in listing_ids_parent.keys()
+            if key.startswith('find({"from":') and key.endswith("})")
+        )
+        listing_ids = listing_ids_parent[listing_ids_key]["listings"]
+
+        for listing_id in listing_ids:
+            listing_data = data["props"]["pageProps"]["__APOLLO_STATE__"].get(
+                listing_id, {}
+            )
+            dict_item = {}
+            dict_item["Id"] = listing_data.get("id")
+            dict_item["title"] = listing_data.get("title")
+            dict_item["uri"] = listing_data.get("uri")
+
     except (json.JSONDecodeError, KeyError) as e:
         print(f"Error parsing JSON data: {e}")
 
