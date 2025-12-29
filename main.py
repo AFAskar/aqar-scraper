@@ -867,10 +867,10 @@ def parse_using_json(page: str) -> list[dict]:
 
             def get_sale_type():
                 if category_info:
-                    if category_info.get("is_rent"):
-                        return "rent"
                     if category_info.get("ga_listing_type") == "daily":
                         return "daily"
+                    if category_info.get("is_rent"):
+                        return "rent"
                 if listing_data.get("is_auction"):
                     return "auction"
                 return "sale"
@@ -947,7 +947,14 @@ def parse_using_json(page: str) -> list[dict]:
 
             # Category & Sale Type
             dict_item["category"] = category_info
-            dict_item["sale_type"] = get_sale_type()
+            sale_type = get_sale_type()
+            dict_item["sale_type"] = sale_type
+
+            # Boolean flags for easy filtering and ML
+            dict_item["is_rental"] = sale_type == "rent"
+            dict_item["is_sale"] = sale_type == "sale"
+            dict_item["is_auction"] = sale_type == "auction"
+            dict_item["is_daily_rental"] = sale_type == "daily"
 
             # Listing Information
             dict_item["create_time"] = listing_data.get("create_time")
