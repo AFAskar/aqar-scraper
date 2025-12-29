@@ -863,6 +863,17 @@ def parse_using_json(page: str) -> list[dict]:
             listing_data = data["props"]["pageProps"]["__APOLLO_STATE__"].get(
                 listing_id, {}
             )
+            category_info = get_category_details(str(listing_data.get("category")))
+
+            def get_sale_type():
+                if category_info:
+                    if category_info.get("is_rent"):
+                        return "rent"
+                    if category_info.get("ga_listing_type") == "daily":
+                        return "daily"
+                if listing_data.get("is_auction"):
+                    return "auction"
+                return "sale"
 
             dict_item = {}
             dict_item["id"] = listing_data.get("id")
@@ -874,12 +885,10 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["num_living_rooms"] = listing_data.get("livings")
             dict_item["zoning"] = listing_data.get("type")
             dict_item["street-width"] = listing_data.get("street_width")
-            dict_item["category"] = get_category_details(
-                str(listing_data.get("category"))
-            )
-
+            dict_item["category"] = category_info
             dict_item["city"] = listing_data.get("city")
             dict_item["district"] = listing_data.get("district")
+            dict_item["sale_type"] = get_sale_type()
             dict_item["address"] = listing_data.get("address")
             dict_item["description"] = listing_data.get("content")
             dict_item["latitude"] = listing_data.get("location", {}).get("lat")
@@ -888,6 +897,7 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["videos"] = [
                 video.get("video") for video in listing_data.get("videos", [])
             ]
+
             output.append(dict_item)
 
     except (json.JSONDecodeError, KeyError) as e:
