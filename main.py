@@ -1032,5 +1032,5 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(all_listings)
 
-    df.to_csv("aqar_fm_listings.csv", index=False)
-    df.to_json("aqar_fm_listings.json", orient="records", force_ascii=False)
+    df.to_csv("aqar_fm_listings.csv", index=False, lineterminator="\n")
+    df.to_json("aqar_fm_listings.json", orient="records", force_ascii=False, indent=2)
