@@ -236,18 +236,6 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def fix_line_terminators(file_path: str) -> None:
-    """Fix unusual line terminators in a file by reading and rewriting with standard LF."""
-    with open(file_path, "rb") as f:
-        content = f.read()
-
-    # Replace all types of line endings with LF (\n)
-    content = content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
-
-    with open(file_path, "wb") as f:
-        f.write(content)
-
-
 def main():
     """Main cleaning process."""
     print("Starting data cleaning process...")
@@ -280,11 +268,6 @@ def main():
     df_cleaned.to_json(
         "aqar_fm_listings_cleaned.json", orient="records", force_ascii=False, indent=2
     )
-
-    # Fix line terminators in original files
-    print("\nFixing line terminators in original files...")
-    fix_line_terminators("aqar_fm_listings.csv")
-    fix_line_terminators("aqar_fm_listings.json")
 
     print("\nData cleaning completed successfully!")
     print(f"Cleaned files saved as:")
