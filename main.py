@@ -78,7 +78,7 @@ def fetch_data(url: str) -> str | None:
     return textof
 
 
-def parse_page(page: str) -> list[dict]:
+def parse_category_page(page: str) -> list[dict]:
     output = []
     soup = BeautifulSoup(page, "html.parser")
     listings = soup.select(
@@ -170,9 +170,36 @@ def parse_page(page: str) -> list[dict]:
     return output
 
 
-if __name__ == "__main__":
+def parse_using_json(page: str) -> list[dict]:
+    output = []
+    soup = BeautifulSoup(page, "html.parser")
+    script_tag = soup.find("script", id="__NEXT_DATA__")
+    if not script_tag:
+        return parse_category_page(page)
 
-    rooturl = "https://sa.aqar.fm/%D8%B9%D9%82%D8%A7%D8%B1%D8%A7%D8%AA/"
+    try:
+        data = json.loads(script_tag.string)
+        # Extract listing IDs from the JSON data
+        listing_ids = data["props"]["pageProps"]["__APOLLO_STATE__"]["ROOT_QUERY"][
+            "WEB"
+        ]
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"Error parsing JSON data: {e}")
+
+    return output
+
+
+def parse_all_category_pages(pages: list[str]) -> list[dict]:
+    all_listings = []
+    for page in pages:
+        listings = parse_category_page(page)
+        all_listings.extend(listings)
+    return all_listings
+
+
+def get_all_category_pages(
+    rooturl: str = "https://sa.aqar.fm/%D8%B9%D9%82%D8%A7%D8%B1%D8%A7%D8%AA/",
+) -> list[str]:
     all_urls = [rooturl + f"{i}" for i in range(1, 9999)]
 
     all_pages = []
@@ -183,11 +210,17 @@ if __name__ == "__main__":
                     all_pages.append(page)
     except AssertionError as e:
         print(f"Stopped fetching more pages due to error: {e}")
+    return all_pages
 
-    all_listings = []
-    for page in all_pages:
-        listings = parse_page(page)
-        all_listings.extend(listings)
+
+if __name__ == "__main__":
+
+    rooturl = "https://sa.aqar.fm/%D8%B9%D9%82%D8%A7%D8%B1%D8%A7%D8%AA/"
+    all_urls = [rooturl + f"{i}" for i in range(1, 9999)]
+
+    all_pages = get_all_category_pages(rooturl)
+
+    all_listings = parse_all_category_pages(all_pages)
 
     df = pd.DataFrame(all_listings)
     df.to_csv("aqar_fm_listings.csv", index=False)

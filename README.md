@@ -172,14 +172,14 @@ You can tweak behavior directly in `main.py`:
     - Manually set `STOP_PAGE` in `main.py` to something finite.
 
 - **Parsed fields**  
-  The CSS selectors and icon-to-field mapping live in `parse_page()`.  
+  The CSS selectors and icon-to-field mapping live in `parse_category_page()`.  
   You can extend or modify these to extract additional fields.
 
 ---
 
 ## Notes and Caveats
 
-- If the site changes its HTML structure or CSS classes, parsing may break; in that case, update the selectors in `parse_page()`.
+- If the site changes its HTML structure or CSS classes, parsing may break; in that case, update the selectors in `parse_category_page()`.
 - If your cookies expire or change, you’ll need to refresh the `.env` values.
 - High-frequency scraping might trigger additional anti-bot measures. Consider:
   - Lowering concurrency
