@@ -139,7 +139,7 @@ def parse_category_page(page: str) -> list[dict]:
         dict_item["city"] = get_text(
             "a > div > div._content__W4gas > div._footer__CnldH > p > span:nth-child(1)"
         )
-        dict_item["neighborhood"] = (
+        dict_item["district"] = (
             get_text(
                 "a > div > div._content__W4gas > div._footer__CnldH > p > span:nth-child(2)"
             )
@@ -874,6 +874,21 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["num_living_rooms"] = listing_data.get("livings")
             dict_item["zoning"] = listing_data.get("type")
             dict_item["street-width"] = listing_data.get("street_width")
+            dict_item["category"] = get_category_details(
+                str(listing_data.get("category"))
+            )
+
+            dict_item["city"] = listing_data.get("city")
+            dict_item["district"] = listing_data.get("district")
+            dict_item["address"] = listing_data.get("address")
+            dict_item["description"] = listing_data.get("content")
+            dict_item["latitude"] = listing_data.get("location", {}).get("lat")
+            dict_item["longitude"] = listing_data.get("location", {}).get("lng")
+            dict_item["images"] = listing_data.get("imgs", [])
+            dict_item["videos"] = [
+                video.get("video") for video in listing_data.get("videos", [])
+            ]
+            output.append(dict_item)
 
     except (json.JSONDecodeError, KeyError) as e:
         print(f"Error parsing JSON data: {e}")
