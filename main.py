@@ -89,7 +89,7 @@ def parse_category_page(page: str) -> list[dict]:
 
         def get_text(selector):
             element = listing.select_one(selector)
-            return element.get_text(separator=" ").strip() if element else None
+            return element.get_text(separator=" ") if element else None
 
         def is_auction(strornum):
             if not strornum:
@@ -139,12 +139,8 @@ def parse_category_page(page: str) -> list[dict]:
         dict_item["city"] = get_text(
             "a > div > div._content__W4gas > div._footer__CnldH > p > span:nth-child(1)"
         )
-        dict_item["district"] = (
-            get_text(
-                "a > div > div._content__W4gas > div._footer__CnldH > p > span:nth-child(2)"
-            )
-            .replace("-", "")
-            .strip()
+        dict_item["district"] = get_text(
+            "a > div > div._content__W4gas > div._footer__CnldH > p > span:nth-child(2)"
         )
         dict_item["sale_type"] = sale_type
         svgimgs = listing.select(
@@ -650,7 +646,7 @@ def parse_using_json(page: str) -> list[dict]:
     """parses the page content using embedded JSON data
 
 
-    JSON EXAMPLE:
+    Input JSON EXAMPLE:
                 "ElasticWebListing:6490057": {
                     "__typename": "ElasticWebListing",
                     "id": 6490057,
