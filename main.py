@@ -995,7 +995,7 @@ def parse_using_json(page: str) -> list[dict]:
 def parse_all_category_pages(pages: list[str]) -> list[dict]:
     all_listings = []
     for page in pages:
-        listings = parse_category_page(page)
+        listings = parse_using_json(page)
         all_listings.extend(listings)
     return all_listings
 
