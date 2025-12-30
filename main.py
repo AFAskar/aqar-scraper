@@ -997,6 +997,18 @@ def parse_using_json(page: str) -> list[dict]:
     return output
 
 
+def flatten_dict(d: dict, parent_key: str = "", sep: str = "_") -> dict:
+    """Flattens a nested dictionary"""
+    items = []
+    for k, v in d.items():
+        new_key = f"{parent_key}{sep}{k}" if parent_key else k
+        if isinstance(v, dict):
+            items.extend(flatten_dict(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
+
 def parse_all_category_pages(pages: list[str]) -> list[dict]:
     all_listings = []
     for page in pages:
@@ -1029,6 +1041,7 @@ if __name__ == "__main__":
     all_pages = get_all_category_pages(rooturl)
 
     all_listings = parse_all_category_pages(all_pages)
+    all_listings = [flatten_dict(listing) for listing in all_listings]
 
     df = pd.DataFrame(all_listings)
 

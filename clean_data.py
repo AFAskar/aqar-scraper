@@ -59,7 +59,41 @@ def clean_text(value: Any) -> str | None:
     text = str(value).strip()
     # Replace multiple spaces with single space
     text = re.sub(r"\s+", " ", text)
+    text = remove_emoji(text)
+    text = normalize_arabic_text(text)
     return text if text else None
+
+
+def remove_emoji(text: str) -> str:
+    """Remove emojis from text."""
+    emoji_pattern = re.compile(
+        "["
+        "\U0001f600-\U0001f64f"  # emoticons
+        "\U0001f300-\U0001f5ff"  # symbols & pictographs
+        "\U0001f680-\U0001f6ff"  # transport & map symbols
+        "\U0001f1e0-\U0001f1ff"  # flags (iOS)
+        "\U00002702-\U000027b0"
+        "\U000024c2-\U0001f251"
+        "]+",
+        flags=re.UNICODE,
+    )
+    return emoji_pattern.sub(r"", text)
+
+
+def normalize_arabic_text(text: str) -> str:
+    """Normalize Arabic text by replacing certain characters."""
+    replacements = {
+        "أ": "ا",
+        "إ": "ا",
+        "آ": "ا",
+        "ى": "ي",
+        "ؤ": "و",
+        "ئ": "ي",
+        "ة": "ه",
+    }
+    for original, replacement in replacements.items():
+        text = text.replace(original, replacement)
+    return text
 
 
 def clean_list_field(value: Any) -> list | None:
@@ -273,7 +307,6 @@ def main():
     print(f"Cleaned files saved as:")
     print("  - aqar_fm_listings_cleaned.csv")
     print("  - aqar_fm_listings_cleaned.json")
-    print(f"Original files have been fixed for line terminators.")
 
 
 if __name__ == "__main__":
