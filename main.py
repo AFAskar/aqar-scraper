@@ -887,7 +887,6 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["price_4_payments"] = listing_data.get("price_4_payments")
             dict_item["price_12_payments"] = listing_data.get("price_12_payments")
             dict_item["rnpl_monthly_price"] = listing_data.get("rnpl_monthly_price")
-            dict_item["rent_period"] = listing_data.get("rent_period")
 
             # Property Details
             dict_item["area_sqm"] = listing_data.get("area")
@@ -898,7 +897,6 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["num_kitchens"] = listing_data.get("ketchen")
             dict_item["num_rooms"] = listing_data.get("rooms")
             dict_item["floor_level"] = listing_data.get("fl")
-            dict_item["age"] = listing_data.get("age")
             dict_item["furnished"] = listing_data.get("furnished")
             dict_item["duplex"] = listing_data.get("duplex")
 
@@ -937,8 +935,6 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["city"] = listing_data.get("city")
             dict_item["city_id"] = listing_data.get("city_id")
             dict_item["district"] = listing_data.get("district")
-            dict_item["district_id"] = listing_data.get("district_id")
-            dict_item["province_id"] = listing_data.get("province_id")
             dict_item["address"] = listing_data.get("address")
             dict_item["latitude"] = listing_data.get("location", {}).get("lat")
             dict_item["longitude"] = listing_data.get("location", {}).get("lng")
