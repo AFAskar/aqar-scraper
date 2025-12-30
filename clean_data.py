@@ -61,23 +61,30 @@ def clean_text(value: Any) -> str | None:
     text = re.sub(r"\s+", " ", text)
     text = remove_emoji(text)
     text = normalize_arabic_text(text)
+    text = remove_diacritics(text)
     return text if text else None
 
 
 def remove_emoji(text: str) -> str:
-    """Remove emojis from text."""
     emoji_pattern = re.compile(
         "["
-        "\U0001f600-\U0001f64f"  # emoticons
+        "\U0001f1e0-\U0001f1ff"  # flags
         "\U0001f300-\U0001f5ff"  # symbols & pictographs
-        "\U0001f680-\U0001f6ff"  # transport & map symbols
-        "\U0001f1e0-\U0001f1ff"  # flags (iOS)
-        "\U00002702-\U000027b0"
-        "\U000024c2-\U0001f251"
+        "\U0001f600-\U0001f64f"  # emoticons
+        "\U0001f680-\U0001f6ff"  # transport & map
+        "\U0001f700-\U0001f77f"
+        "\U0001f780-\U0001f7ff"
+        "\U0001f800-\U0001f8ff"
+        "\U0001f900-\U0001f9ff"
+        "\U0001fa00-\U0001faff"
+        "\u2600-\u26ff"
+        "\u2700-\u27bf"
+        "\ufe0f"  # variation selector
+        "\u200d"  # zero width joiner
         "]+",
         flags=re.UNICODE,
     )
-    return emoji_pattern.sub(r"", text)
+    return emoji_pattern.sub("", text)
 
 
 def normalize_arabic_text(text: str) -> str:
@@ -220,7 +227,6 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         "title",
         "url",
         "rent_period",
-        "zoning",
         "direction",
         "city",
         "district",
@@ -230,10 +236,18 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         "deed_number",
         "plan_no",
         "parcel_no",
-        "user_type",
         "company_name",
         "description",
         "street_direction",
+        "category_ga_listing_type",
+        "category_description",
+        "category_ga_property_category",
+        "category_name",
+        "category_en",
+        "category_plural",
+        "category_uri",
+        "category_path",
+        "category_keywords",
     ]
     for col in text_columns:
         if col in df_cleaned.columns:
@@ -268,6 +282,11 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
         df = df.drop_duplicates(subset=["url"], keep="first")
 
     return df
+
+
+def remove_diacritics(text: str) -> str:
+    """Remove Arabic diacritics from text."""
+    return re.sub(r"[\u064B-\u0652\u0670]", "", text)
 
 
 def main():
