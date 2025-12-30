@@ -150,8 +150,8 @@ def parse_category_page(page: str) -> list[dict]:
         for k, span in svgurl2span.items():
             if not k:
                 continue
-            icon_name: str = k.split("/")[-1].split(".")[0]
-            value: str | None = span.parent.get_text(strip=True)
+            icon_name = k.split("/")[-1].split(".")[0]
+            value = span.parent.get_text(strip=True)
             icon_map = {
                 "area": "area_sqm",
                 "bed-king": "num_bedrooms",
@@ -901,7 +901,6 @@ def parse_using_json(page: str) -> list[dict]:
             dict_item["age"] = listing_data.get("age")
             dict_item["furnished"] = listing_data.get("furnished")
             dict_item["duplex"] = listing_data.get("duplex")
-            dict_item["zoning"] = listing_data.get("type")
 
             # Amenities & Features
             dict_item["ac"] = listing_data.get("ac")
@@ -974,7 +973,6 @@ def parse_using_json(page: str) -> list[dict]:
 
             # User/Agent Information
             user_info = listing_data.get("user", {})
-            dict_item["user_type"] = listing_data.get("user_type")
             dict_item["user_verified"] = (
                 user_info.get("iam_verified") if user_info else None
             )
