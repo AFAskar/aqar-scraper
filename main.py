@@ -922,7 +922,6 @@ def parse_using_json(page: str) -> list[dict]:
                 listing_data.get("apartment_in_villa")
             )
             dict_item["street_width"] = listing_data.get("street_width")
-            dict_item["street_direction"] = listing_data.get("street_direction")
             dict_item["direction"] = listing_data.get("direction")
             dict_item["city"] = listing_data.get("city")
             dict_item["district"] = listing_data.get("district")

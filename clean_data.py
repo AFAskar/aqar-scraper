@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 import re
-from typing import Any, Dict
+from typing import Any
 
 
 def clean_price(price: Any) -> float | None:
@@ -114,25 +114,6 @@ def clean_list_field(value: Any) -> list | None:
     # Handle string representation of list
     value_str = str(value).strip()
     if value_str.startswith("[") and value_str.endswith("]"):
-        try:
-            parsed = eval(value_str)
-            return parsed if parsed else None
-        except:
-            return None
-    return None
-
-
-def clean_dict_field(value: Any) -> dict | None:
-    """Clean dictionary fields (category)."""
-    if pd.isna(value) or value == "" or value is None:
-        return None
-
-    if isinstance(value, dict):
-        return value
-
-    # Handle string representation of dict
-    value_str = str(value).strip()
-    if value_str.startswith("{") and value_str.endswith("}"):
         try:
             parsed = eval(value_str)
             return parsed if parsed else None
@@ -259,10 +240,6 @@ def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     for col in list_columns:
         if col in df_cleaned.columns:
             df_cleaned[col] = df_cleaned[col].apply(clean_list_field)
-
-    # Dictionary column
-    if "category" in df_cleaned.columns:
-        df_cleaned["category"] = df_cleaned["category"].apply(clean_dict_field)
 
     return df_cleaned
 
