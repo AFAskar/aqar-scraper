@@ -1019,9 +1019,10 @@ if __name__ == "__main__":
     all_pages = get_all_category_pages(rooturl)
 
     all_listings = parse_all_category_pages(all_pages)
-    all_listings = [flatten_dict(listing) for listing in all_listings]
+    all_listings_flat = [flatten_dict(listing) for listing in all_listings]
 
     df = pd.DataFrame(all_listings)
+    df_flat = pd.DataFrame(all_listings_flat)
 
-    df.to_csv("aqar_fm_listings.csv", index=False, lineterminator="\n")
+    df_flat.to_csv("aqar_fm_listings.csv", index=False, lineterminator="\n")
     df.to_json("aqar_fm_listings.json", orient="records", force_ascii=False, indent=2)
