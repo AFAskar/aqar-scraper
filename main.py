@@ -159,8 +159,12 @@ def parse_category_page(page: str) -> list[dict]:
         for k, span in svgurl2span.items():
             if not k:
                 continue
-            icon_name = k.split("/")[-1].split(".")[0]
-            value = span.parent.get_text(strip=True)
+            icon_name = k.split("/")[-1].split(".")[ # ty:ignore[possibly-missing-attribute]
+                0
+            ]  
+            value = span.parent.get_text( # ty:ignore[possibly-missing-attribute]
+                strip=True
+            )  
             icon_map = {
                 "area": "area_sqm",
                 "bed-king": "num_bedrooms",
