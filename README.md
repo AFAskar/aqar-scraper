@@ -18,11 +18,14 @@ The scraper:
 
 - `main.py` – Entry point and core scraper logic
 - `pyproject.toml` – Project metadata and dependencies
-- `aqar_fm_listings.csv` – Output CSV (created by the scraper)
+- `data/raw/aqar_fm_listings.csv` – Output CSV (created by the scraper)
+- `data/processed/aqar_fm_listings_cleaned.csv` – Cleaned CSV (created by the clean script)
+- `data/output/aqar_fm_listings_auction_cleaned.csv` – auction CSV (all auction listings)
+- `data/output/aqar_fm_listings_rental_cleaned.csv` – rental CSV (all rental listings)
+- `data/output/aqar_fm_listings_sale_cleaned.csv` – sale CSV (all sale listings)
 - `cache/` – HTTP response cache managed by joblib
 - `checks.ipynb` – Example notebook for inspecting the data (optional)
 - `data.html` – Example saved HTML page (optional)
-- `output.json` – Legacy/example output (not used by main.py)
 
 ---
 
@@ -44,10 +47,6 @@ Python dependencies (also defined in `pyproject.toml`):
 
 ## Installation
 
-You can use either **uv** (recommended, since `uv.lock` is present) or plain **pip**.
-
-### Option 1: Using uv
-
 1. Install [uv](https://github.com/astral-sh/uv) if you don’t already have it.
 2. From the project root:
 
@@ -56,23 +55,6 @@ You can use either **uv** (recommended, since `uv.lock` is present) or plain **p
    ```
 
    This will create a virtual environment and install all dependencies.
-
-### Option 2: Using pip
-
-1. Create and activate a virtual environment (optional but recommended):
-
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # on Windows: .venv\Scripts\activate
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pip install beautifulsoup4 httpx joblib pandas python-dotenv
-   ```
-
----
 
 ## Configuration
 
@@ -104,18 +86,10 @@ If these are missing or invalid, the script may be blocked or return “you have
 
 From the project root:
 
-### With uv
+### Scraper
 
 ```bash
 uv run main.py
-```
-
-### With plain Python
-
-(Activate your virtualenv if you created one.)
-
-```bash
-python main.py
 ```
 
 The script will:
@@ -150,6 +124,39 @@ The script will:
    ```
 
 The scraper also uses a joblib `Memory` cache under `./cache` so repeated runs don’t refetch unchanged pages.
+
+### Clean the Data
+
+To process the raw scraped data, run:
+
+```bash
+uv run clean_data.py
+```
+
+This script performs several cleaning and normalization steps:
+
+1.  **Deduplication**: Removes duplicate listings based on ID or URL.
+2.  **Data Type Conversion**: Converts prices and numeric fields (area, bedrooms, etc.) to proper number formats.
+3.  **Text Normalization**:
+    - Normalizes Arabic text (unifying aleph forms, etc.).
+    - Removes diacritics (Tashkeel).
+    - Removes emojis and extra whitespace.
+4.  **Boolean Standardization**: Converts various yes/no/1/0 formats to standard booleans.
+5.  **Dataset Splitting**: Separates the data into three categories based on `sale_type`:
+    - **Sale**: Listings for sale.
+    - **Rental**: Listings for rent.
+    - **Auction**: Listings for auction.
+
+**Outputs:**
+
+The script generates the following files in `data/processed/` and `data/output/`:
+
+- `data/processed/aqar_fm_listings_cleaned.csv` (Full cleaned dataset)
+- `data/output/aqar_fm_listings_sale_cleaned.csv`
+- `data/output/aqar_fm_listings_rental_cleaned.csv`
+- `data/output/aqar_fm_listings_auction_cleaned.csv`
+
+(JSON versions are also generated for each)
 
 ---
 
