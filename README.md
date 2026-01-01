@@ -131,17 +131,17 @@ uv run clean_data.py
 
 This script performs several cleaning and normalization steps:
 
-1.  **Deduplication**: Removes duplicate listings based on ID or URL.
-2.  **Data Type Conversion**: Converts prices and numeric fields (area, bedrooms, etc.) to proper number formats.
-3.  **Text Normalization**:
-    - Normalizes Arabic text (unifying aleph forms, etc.).
-    - Removes diacritics (Tashkeel).
-    - Removes emojis and extra whitespace.
-4.  **Boolean Standardization**: Converts various yes/no/1/0 formats to standard booleans.
-5.  **Dataset Splitting**: Separates the data into three categories based on `sale_type`:
-    - **Sale**: Listings for sale.
-    - **Rental**: Listings for rent.
-    - **Auction**: Listings for auction.
+1. **Deduplication**: Removes duplicate listings based on ID or URL.
+2. **Data Type Conversion**: Converts prices and numeric fields (area, bedrooms, etc.) to proper number formats.
+3. **Text Normalization**:
+   - Normalizes Arabic text (unifying aleph forms, etc.).
+   - Removes diacritics (Tashkeel).
+   - Removes emojis and extra whitespace.
+4. **Boolean Standardization**: Converts various yes/no/1/0 formats to standard booleans.
+5. **Dataset Splitting**: Separates the data into three categories based on `sale_type`:
+   - **Sale**: Listings for sale.
+   - **Rental**: Listings for rent.
+   - **Auction**: Listings for auction.
 
 **Outputs:**
 
