@@ -2,6 +2,14 @@ import pandas as pd
 import json
 import re
 from typing import Any
+from pathlib import Path
+
+data_dir = Path("./data")
+raw_dir = data_dir / "raw"
+processed_dir = data_dir / "processed"
+output_dir = data_dir / "output"
+processed_dir.mkdir(parents=True, exist_ok=True)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 
 def clean_price(price: Any) -> float | None:
@@ -274,7 +282,7 @@ def main():
 
     # Load the data
     print("Loading data from CSV...")
-    df = pd.read_csv("aqar_fm_listings.csv")
+    df = pd.read_csv(raw_dir / "aqar_fm_listings.csv")
 
     print(f"Loaded {len(df)} records")
     print(f"Columns: {df.columns.tolist()}")
@@ -296,35 +304,46 @@ def main():
 
     # Save cleaned data
     print("\nSaving cleaned data...")
-    df_cleaned.to_csv("aqar_fm_listings_cleaned.csv", index=False, lineterminator="\n")
+    df_cleaned.to_csv(
+        processed_dir / "aqar_fm_listings_cleaned.csv", index=False, lineterminator="\n"
+    )
     df_cleaned.to_json(
-        "aqar_fm_listings_cleaned.json", orient="records", force_ascii=False, indent=2
+        processed_dir / "aqar_fm_listings_cleaned.json",
+        orient="records",
+        force_ascii=False,
+        indent=2,
     )
 
     rental_df, auction_df, sale_df = split_datasets(df_cleaned)
     rental_df.to_csv(
-        "aqar_fm_listings_rental_cleaned.csv", index=False, lineterminator="\n"
+        output_dir / "aqar_fm_listings_rental_cleaned.csv",
+        index=False,
+        lineterminator="\n",
     )
     rental_df.to_json(
-        "aqar_fm_listings_rental_cleaned.json",
+        output_dir / "aqar_fm_listings_rental_cleaned.json",
         orient="records",
         force_ascii=False,
         indent=2,
     )
     auction_df.to_csv(
-        "aqar_fm_listings_auction_cleaned.csv", index=False, lineterminator="\n"
+        output_dir / "aqar_fm_listings_auction_cleaned.csv",
+        index=False,
+        lineterminator="\n",
     )
     auction_df.to_json(
-        "aqar_fm_listings_auction_cleaned.json",
+        output_dir / "aqar_fm_listings_auction_cleaned.json",
         orient="records",
         force_ascii=False,
         indent=2,
     )
     sale_df.to_csv(
-        "aqar_fm_listings_sale_cleaned.csv", index=False, lineterminator="\n"
+        output_dir / "aqar_fm_listings_sale_cleaned.csv",
+        index=False,
+        lineterminator="\n",
     )
     sale_df.to_json(
-        "aqar_fm_listings_sale_cleaned.json",
+        output_dir / "aqar_fm_listings_sale_cleaned.json",
         orient="records",
         force_ascii=False,
         indent=2,
@@ -332,14 +351,14 @@ def main():
 
     print("\nData cleaning completed successfully!")
     print(f"Cleaned files saved as:")
-    print("  - aqar_fm_listings_cleaned.csv")
-    print("  - aqar_fm_listings_cleaned.json")
-    print("  - aqar_fm_listings_rental_cleaned.csv")
-    print("  - aqar_fm_listings_rental_cleaned.json")
-    print("  - aqar_fm_listings_auction_cleaned.csv")
-    print("  - aqar_fm_listings_auction_cleaned.json")
-    print("  - aqar_fm_listings_sale_cleaned.csv")
-    print("  - aqar_fm_listings_sale_cleaned.json")
+    print(f"  - {processed_dir / 'aqar_fm_listings_cleaned.csv'}")
+    print(f"  - {processed_dir / 'aqar_fm_listings_cleaned.json'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_rental_cleaned.csv'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_rental_cleaned.json'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_auction_cleaned.csv'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_auction_cleaned.json'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_sale_cleaned.csv'}")
+    print(f"  - {output_dir / 'aqar_fm_listings_sale_cleaned.json'}")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 import httpx
 import json
@@ -10,7 +11,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
-memory = Memory("./cache", verbose=0)
+data_dir = Path("./data")
+processed_dir = data_dir / "processed"
+cache_dir = data_dir / "cache"
+
+memory = Memory(cache_dir / "joblibdir", verbose=0)
 
 STOP_PAGE = float("inf")
 
@@ -1024,5 +1029,12 @@ if __name__ == "__main__":
     df = pd.DataFrame(all_listings)
     df_flat = pd.DataFrame(all_listings_flat)
 
-    df_flat.to_csv("aqar_fm_listings.csv", index=False, lineterminator="\n")
-    df.to_json("aqar_fm_listings.json", orient="records", force_ascii=False, indent=2)
+    df_flat.to_csv(
+        processed_dir / "aqar_fm_listings.csv", index=False, lineterminator="\n"
+    )
+    df.to_json(
+        processed_dir / "aqar_fm_listings.json",
+        orient="records",
+        force_ascii=False,
+        indent=2,
+    )
