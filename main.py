@@ -12,8 +12,12 @@ from concurrent.futures import ThreadPoolExecutor
 load_dotenv()
 
 data_dir = Path("./data")
+raw_dir = data_dir / "raw"
 processed_dir = data_dir / "processed"
 cache_dir = data_dir / "cache"
+
+raw_dir.mkdir(parents=True, exist_ok=True)
+processed_dir.mkdir(parents=True, exist_ok=True)
 
 memory = Memory(cache_dir / "joblibdir", verbose=0)
 
@@ -1029,11 +1033,9 @@ if __name__ == "__main__":
     df = pd.DataFrame(all_listings)
     df_flat = pd.DataFrame(all_listings_flat)
 
-    df_flat.to_csv(
-        processed_dir / "aqar_fm_listings.csv", index=False, lineterminator="\n"
-    )
+    df_flat.to_csv(raw_dir / "aqar_fm_listings.csv", index=False, lineterminator="\n")
     df.to_json(
-        processed_dir / "aqar_fm_listings.json",
+        raw_dir / "aqar_fm_listings.json",
         orient="records",
         force_ascii=False,
         indent=2,

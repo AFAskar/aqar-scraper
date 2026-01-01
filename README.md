@@ -6,8 +6,8 @@ The scraper:
 
 - Iterates over paginated listing pages on sa.aqar.fm
 - Uses cached HTTP responses (via joblib) to avoid re-downloading the same pages
-- Parses listing data with BeautifulSoup
-- Saves all results into `aqar_fm_listings.csv`
+- Parses listing data primarily from embedded JSON (`__NEXT_DATA__`) with a BeautifulSoup fallback
+- Saves all results into `data/raw/aqar_fm_listings.csv` and `data/raw/aqar_fm_listings.json`
 
 > ⚠️ **Disclaimer**  
 > This project is for personal/educational use only. When using it, you are responsible for complying with aqar.fm’s Terms of Service, robots.txt, and all applicable laws. Do not use it for abusive or high‑volume scraping.
@@ -19,13 +19,13 @@ The scraper:
 - `main.py` – Entry point and core scraper logic
 - `pyproject.toml` – Project metadata and dependencies
 - `data/raw/aqar_fm_listings.csv` – Output CSV (created by the scraper)
+- `data/raw/aqar_fm_listings.json` – Output JSON (created by the scraper)
 - `data/processed/aqar_fm_listings_cleaned.csv` – Cleaned CSV (created by the clean script)
 - `data/output/aqar_fm_listings_auction_cleaned.csv` – auction CSV (all auction listings)
 - `data/output/aqar_fm_listings_rental_cleaned.csv` – rental CSV (all rental listings)
 - `data/output/aqar_fm_listings_sale_cleaned.csv` – sale CSV (all sale listings)
-- `cache/` – HTTP response cache managed by joblib
+- `data/cache/` – HTTP response cache managed by joblib
 - `checks.ipynb` – Example notebook for inspecting the data (optional)
-- `data.html` – Example saved HTML page (optional)
 
 ---
 
@@ -104,26 +104,22 @@ The script will:
 2. Fetch pages concurrently (up to 10 threads).
 3. Automatically stop when it encounters a page containing the Arabic text “لا توجد نتائج” (“no results”), or if it detects that you are blocked.
 4. Parse each page and extract fields such as:
-   - `title`
-   - `url`
-   - `price`
-   - `description`
-   - `city`
-   - `neighborhood`
+   - `title`, `url`, `price`, `description`
+   - `city`, `district`, `address`, `coordinates` (`lat`, `lng`)
    - `sale_type` (`sale`, `rental`, or `auction`)
-   - `area_sqm`
-   - `num_bedrooms`
-   - `num_bathrooms`
-   - `num_living_rooms`
-   - `zoning`
-   - `street-width`
+   - `area_sqm`, `num_bedrooms`, `num_bathrooms`, `num_living_rooms`
+   - `floor_level`, `street_width`, `age`
+   - **Attributes**: `furnished`, `ac`, `kitchen`, `lift`, `car_entrance`, etc.
+   - **Media**: `images`, `videos`
+   - **Metadata**: `create_time`, `published_at`, `user_info`
 5. Save all listings into:
 
    ```text
-   aqar_fm_listings.csv
+   data/raw/aqar_fm_listings.csv
+   data/raw/aqar_fm_listings.json
    ```
 
-The scraper also uses a joblib `Memory` cache under `./cache` so repeated runs don’t refetch unchanged pages.
+The scraper also uses a joblib `Memory` cache under `./data/cache` so repeated runs don’t refetch unchanged pages.
 
 ### Clean the Data
 
