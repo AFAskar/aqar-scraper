@@ -193,4 +193,7 @@ You can tweak behavior directly in `main.py`:
 
 ## License
 
-MIT
+This project is dual-licensed:
+
+- **Source Code**: Licensed under [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html).
+- **Dataset**: The output datasets are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

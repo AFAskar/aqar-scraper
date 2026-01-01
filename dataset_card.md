@@ -1,5 +1,5 @@
 ---
-license: other
+license: cc-by-4.0
 task_categories:
   - tabular-regression
   - tabular-classification
