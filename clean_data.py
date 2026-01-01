@@ -261,6 +261,13 @@ def remove_diacritics(text: str) -> str:
     return re.sub(r"[\u064B-\u0652\u0670]", "", text)
 
 
+def split_datasets(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    rental_df = df[df["sale_type"] == "rent"]
+    auction_df = df[df["sale_type"] == "auction"]
+    sale_df = df[df["sale_type"] == "sale"]
+    return rental_df, auction_df, sale_df
+
+
 def main():
     """Main cleaning process."""
     print("Starting data cleaning process...")
@@ -294,10 +301,45 @@ def main():
         "aqar_fm_listings_cleaned.json", orient="records", force_ascii=False, indent=2
     )
 
+    rental_df, auction_df, sale_df = split_datasets(df_cleaned)
+    rental_df.to_csv(
+        "aqar_fm_listings_rental_cleaned.csv", index=False, lineterminator="\n"
+    )
+    rental_df.to_json(
+        "aqar_fm_listings_rental_cleaned.json",
+        orient="records",
+        force_ascii=False,
+        indent=2,
+    )
+    auction_df.to_csv(
+        "aqar_fm_listings_auction_cleaned.csv", index=False, lineterminator="\n"
+    )
+    auction_df.to_json(
+        "aqar_fm_listings_auction_cleaned.json",
+        orient="records",
+        force_ascii=False,
+        indent=2,
+    )
+    sale_df.to_csv(
+        "aqar_fm_listings_sale_cleaned.csv", index=False, lineterminator="\n"
+    )
+    sale_df.to_json(
+        "aqar_fm_listings_sale_cleaned.json",
+        orient="records",
+        force_ascii=False,
+        indent=2,
+    )
+
     print("\nData cleaning completed successfully!")
     print(f"Cleaned files saved as:")
     print("  - aqar_fm_listings_cleaned.csv")
     print("  - aqar_fm_listings_cleaned.json")
+    print("  - aqar_fm_listings_rental_cleaned.csv")
+    print("  - aqar_fm_listings_rental_cleaned.json")
+    print("  - aqar_fm_listings_auction_cleaned.csv")
+    print("  - aqar_fm_listings_auction_cleaned.json")
+    print("  - aqar_fm_listings_sale_cleaned.csv")
+    print("  - aqar_fm_listings_sale_cleaned.json")
 
 
 if __name__ == "__main__":
